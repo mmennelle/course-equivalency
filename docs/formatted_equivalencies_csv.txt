@@ -1,0 +1,73 @@
+source_institution,source_department,source_code,source_title,target_institution,target_department,target_code,target_title
+Delgado Community College,English,ENGL 101,English Composition I,University of New Orleans,English,ENGL 1157,English Composition
+Delgado Community College,English,ENGL 102,English Composition II,University of New Orleans,English,ENGL 1158,English Composition II
+Delgado Community College,English,ENGL 110,Advanced English Composition,University of New Orleans,English,ENGL 1157,English Composition
+Delgado Community College,English,ENGL 205,Introduction to Literature,University of New Orleans,English,ENGL 2238,Introduction to Literature
+Delgado Community College,English,ENGL 206,World Literature,University of New Orleans,English,ENGL 2208,World Literature
+Delgado Community College,English,ENGL 211,American Literature I,University of New Orleans,English,ENGL 2031,American Literature I
+Delgado Community College,English,ENGL 212,American Literature II,University of New Orleans,English,ENGL 2032,American Literature II
+Delgado Community College,English,ENGL 221,British Literature I,University of New Orleans,English,ENGL 2341,British Literature I
+Delgado Community College,English,ENGL 222,British Literature II,University of New Orleans,English,ENGL 2342,British Literature II
+Delgado Community College,English,ENGL 231,Creative Writing,University of New Orleans,English,ENGL 2371,Creative Writing
+Delgado Community College,English,ENGL 243,Technical Writing,University of New Orleans,English,ENGL 2000NE,English Elective
+Delgado Community College,English,ENGL 244,Business Writing,University of New Orleans,English,ENGL 2071,Business Writing
+Delgado Community College,English,ENGL 245,Advanced Composition,University of New Orleans,English,ENGL 2378,Advanced Composition
+Delgado Community College,English,ENGL 253,Children's Literature,University of New Orleans,English,ENGL 2377,Children's Literature
+Delgado Community College,Mathematics,MATH 130,College Algebra,University of New Orleans,Mathematics,MATH 1125,College Algebra
+Delgado Community College,Mathematics,MATH 131,Trigonometry,University of New Orleans,Mathematics,MATH 1126,Trigonometry
+Delgado Community College,Mathematics,MATH 203,Calculus I,University of New Orleans,Mathematics,MATH 2314,Calculus I
+Delgado Community College,Mathematics,MATH 221,Statistics,University of New Orleans,Mathematics,MATH 2114,Statistics
+Delgado Community College,Fine Arts,FNAR 121,Art Appreciation,University of New Orleans,Fine Arts,FA 1010,Art Appreciation
+Delgado Community College,Fine Arts,FNAR 125,Drawing I,University of New Orleans,Fine Arts,FA 2201,Drawing I
+Delgado Community College,Fine Arts,FNAR 126,Drawing II,University of New Orleans,Fine Arts,FA 2202,Drawing II
+Delgado Community College,Fine Arts,FNAR 127,Painting,University of New Orleans,Fine Arts,FA 2264,Painting
+Delgado Community College,Music,MUSC 105,Music Appreciation,University of New Orleans,Music,MUS 1000,Music Appreciation
+Delgado Community College,Music,MUSC 137,Music Theory,University of New Orleans,Music,MUS 1003,Music Theory
+Delgado Community College,Theatre,THEA 101,Theatre Appreciation,University of New Orleans,Theatre,FTA 1000,Theatre Appreciation
+Delgado Community College,Biology,BIOL 141,General Biology I,University of New Orleans,Biological Sciences,BIOS 1083,General Biology I
+Delgado Community College,Biology,BIOL 142,General Biology I Lab,University of New Orleans,Biological Sciences,BIOS 1073,General Biology I Lab
+Delgado Community College,Biology,BIOL 143,General Biology II,University of New Orleans,Biological Sciences,BIOS 1081,General Biology II
+Delgado Community College,Biology,BIOL 144,General Biology II Lab,University of New Orleans,Biological Sciences,BIOS 1071,General Biology II Lab
+Delgado Community College,Biology,BIOL 211,Anatomy and Physiology I,University of New Orleans,Biological Sciences,BIOS 2743,Anatomy and Physiology I
+Delgado Community College,Biology,BIOL 210,Human Anatomy,University of New Orleans,Biological Sciences,BIOS 2743,Human Anatomy
+Delgado Community College,Chemistry,CHEM 141,General Chemistry I,University of New Orleans,Chemistry,CHEM 1017,General Chemistry I
+Delgado Community College,Chemistry,CHEM 142,General Chemistry I Lab,University of New Orleans,Chemistry,CHEM 1018,General Chemistry I Lab
+Delgado Community College,Chemistry,CHEM 143,General Chemistry II,University of New Orleans,Chemistry,CHEM 1007,General Chemistry II
+Delgado Community College,Chemistry,CHEM 144,General Chemistry II Lab,University of New Orleans,Chemistry,CHEM 1008,General Chemistry II Lab
+Delgado Community College,Chemistry,CHEM 221,Organic Chemistry I,University of New Orleans,Chemistry,CHEM 2217,Organic Chemistry I
+Delgado Community College,Chemistry,CHEM 223,Organic Chemistry II,University of New Orleans,Chemistry,CHEM 2017,Organic Chemistry II
+Delgado Community College,Physics,PHYS 141,General Physics I,University of New Orleans,Physics,PHYS 1031,General Physics I
+Delgado Community College,Physics,PHYS 142,General Physics II,University of New Orleans,Physics,PHYS 1032,General Physics II
+Delgado Community College,Physics,PHYS 221,University Physics I,University of New Orleans,Physics,PHYS 1061,University Physics I
+Delgado Community College,Physics,PHYS 222,University Physics II,University of New Orleans,Physics,PHYS 1062,University Physics II
+Delgado Community College,Anthropology,ANTH 160,Cultural Anthropology,University of New Orleans,Anthropology,ANTH 2052,Cultural Anthropology
+Delgado Community College,Anthropology,ANTH 165,Physical Anthropology,University of New Orleans,Anthropology,ANTH 2051,Physical Anthropology
+Delgado Community College,Anthropology,ANTH 200,Archaeology,University of New Orleans,Anthropology,ANTH 2000NE,Anthropology Elective
+Delgado Community College,Economics,ECON 201,Principles of Macroeconomics,University of New Orleans,Economics,ECON 1204,Principles of Macroeconomics
+Delgado Community College,Economics,ECON 202,Principles of Microeconomics,University of New Orleans,Economics,ECON 1203,Principles of Microeconomics
+Delgado Community College,Political Science,POLI 180,American Government,University of New Orleans,Political Science,POLI 2151,American Government
+Delgado Community College,Psychology,PSYC 127,General Psychology,University of New Orleans,Psychology,PSYC 1000,General Psychology
+Delgado Community College,Psychology,PSYC 225,Social Psychology,University of New Orleans,Psychology,PSYC 2110,Social Psychology
+Delgado Community College,Psychology,PSYC 226,Developmental Psychology,University of New Orleans,Psychology,PSYC 2100,Developmental Psychology
+Delgado Community College,Psychology,PSYC 235,Abnormal Psychology,University of New Orleans,Psychology,PSYC 2200,Abnormal Psychology
+Delgado Community College,Psychology,PSYC 245,Research Methods,University of New Orleans,Psychology,PSYC 2400,Research Methods
+Delgado Community College,Sociology,SOCI 151,Introduction to Sociology,University of New Orleans,Sociology,SOC 1051,Introduction to Sociology
+Delgado Community College,Sociology,SOCI 155,Social Problems,University of New Orleans,Sociology,SOC 2962,Social Problems
+Delgado Community College,Sociology,SOCI 250,Marriage and Family,University of New Orleans,Sociology,SOC 1051,Marriage and Family
+Delgado Community College,Sociology,SOCI 255,Criminology,University of New Orleans,Sociology,SOC 1051,Criminology
+Delgado Community College,History,HIST 103,World Civilization I,University of New Orleans,History,HIST 1001,World Civilization I
+Delgado Community College,History,HIST 105,World Civilization II,University of New Orleans,History,HIST 1002,World Civilization II
+Delgado Community College,History,HIST 141,Western Civilization I,University of New Orleans,History,HIST 1010,Western Civilization I
+Delgado Community College,History,HIST 205,American History I,University of New Orleans,History,HIST 2501,American History I
+Delgado Community College,History,HIST 206,American History II,University of New Orleans,History,HIST 2502,American History II
+Delgado Community College,History,HIST 260,Louisiana History,University of New Orleans,History,HIST 2601,Louisiana History
+Delgado Community College,Philosophy,PHIL 101,Introduction to Philosophy,University of New Orleans,Philosophy,PHIL 1000,Introduction to Philosophy
+Delgado Community College,Philosophy,PHIL 175,Ethics,University of New Orleans,Philosophy,PHIL 1200,Ethics
+Delgado Community College,French,FREN 101,Elementary French I,University of New Orleans,Foreign Languages,FREN 1001,Elementary French I
+Delgado Community College,French,FREN 102,Elementary French II,University of New Orleans,Foreign Languages,FREN 1002,Elementary French II
+Delgado Community College,French,FREN 201,Intermediate French I,University of New Orleans,Foreign Languages,FREN 2001,Intermediate French I
+Delgado Community College,French,FREN 202,Intermediate French II,University of New Orleans,Foreign Languages,FREN 2002,Intermediate French II
+Delgado Community College,Spanish,SPAN 101,Elementary Spanish I,University of New Orleans,Foreign Languages,SPAN 1001,Elementary Spanish I
+Delgado Community College,Spanish,SPAN 102,Elementary Spanish II,University of New Orleans,Foreign Languages,SPAN 1002,Elementary Spanish II
+Delgado Community College,Spanish,SPAN 201,Intermediate Spanish I,University of New Orleans,Foreign Languages,SPAN 2001,Intermediate Spanish I
+Delgado Community College,Spanish,SPAN 202,Intermediate Spanish II,University of New Orleans,Foreign Languages,SPAN 2002,Intermediate Spanish II

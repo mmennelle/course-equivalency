@@ -1,0 +1,5 @@
+id,code,title,description,credits,department_id,institution_id
+1,CSCI 1010,Intro to Programming,Basic programming concepts,3.0,1,1
+2,CSCI 1581,Intro to Computer Science I,Fundamentals of CS,3.0,2,2
+3,CSCI 2010,Advanced Programming,OOP and data structures,3.0,1,1
+4,CSCI 2120,Data Structures,In-depth data structures,3.0,2,2
