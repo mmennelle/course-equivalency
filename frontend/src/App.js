@@ -19,7 +19,8 @@ function App() {
   const [planCode, setPlanCode] = useState('');
   const [searchCode, setSearchCode] = useState('');
   const [loadedPlan, setLoadedPlan] = useState(null);
-  const [currentView, setCurrentView] = useState('browse'); // 'browse', 'create-plan', 'view-plan'
+  const [currentView, setCurrentView] = useState('browse'); // 'browse', 'create-plan', 'view-plan', 'edit-plan'
+  const [isEditMode, setIsEditMode] = useState(false);
 
   useEffect(() => {
     axios.get('/api/institutions').then(res => setInstitutions(res.data));
@@ -113,6 +114,116 @@ function App() {
     }
   };
 
+  const updatePlan = async () => {
+    if (!loadedPlan) {
+      alert('Error: No plan loaded for editing');
+      return;
+    }
+    
+    console.log('Updating plan with code:', loadedPlan.code); // Debug log
+    
+    if (!planName.trim()) {
+      alert('Please enter a plan name');
+      return;
+    }
+    if (selectedCourses.length === 0) {
+      alert('Please select at least one course');
+      return;
+    }
+    if (!sourceInstitution || !targetInstitution) {
+      alert('Please select source and target institutions');
+      return;
+    }
+
+    try {
+      console.log('Making PUT request to:', `/api/update-plan/${loadedPlan.code}`); // Debug log
+      
+      const response = await axios.put(`/api/update-plan/${loadedPlan.code}`, {
+        plan_name: planName,
+        source_institution_id: sourceInstitution,
+        target_institution_id: targetInstitution,
+        selected_courses: selectedCourses.map(c => c.id),
+        additional_data: {
+          total_courses: selectedCourses.length,
+          updated_by_user: true,
+          last_updated: new Date().toISOString()
+        }
+      });
+
+      console.log('Update response:', response.data); // Debug log
+      alert(`Plan updated successfully! Your plan code remains: ${loadedPlan.code}`);
+      
+      // Reload the updated plan using the SAME code
+      const updatedPlan = await axios.get(`/api/get-plan/${loadedPlan.code}`);
+      setLoadedPlan(updatedPlan.data.plan);
+      setIsEditMode(false);
+      setCurrentView('view-plan');
+      
+    } catch (error) {
+      console.error('Update error:', error); // Debug log
+      alert('Failed to update plan: ' + (error.response?.data?.error || 'Unknown error'));
+    }
+  };
+
+  const deletePlan = async () => {
+    if (!loadedPlan) return;
+    
+    const confirmDelete = window.confirm(`Are you sure you want to delete the plan "${loadedPlan.plan_name}"? This action cannot be undone.`);
+    if (!confirmDelete) return;
+
+    try {
+      await axios.delete(`/api/delete-plan/${loadedPlan.code}`);
+      alert('Plan deleted successfully!');
+      
+      // Reset state and go back to browse
+      setLoadedPlan(null);
+      setSearchCode('');
+      setSelectedCourses([]);
+      setPlanName('');
+      setSourceInstitution('');
+      setTargetInstitution('');
+      setIsEditMode(false);
+      setCurrentView('browse');
+      
+    } catch (error) {
+      alert('Failed to delete plan: ' + (error.response?.data?.error || 'Unknown error'));
+    }
+  };
+
+  const startEditMode = () => {
+    if (loadedPlan) {
+      // Populate form with current plan data
+      setPlanName(loadedPlan.plan_name);
+      setSourceInstitution(loadedPlan.plan_data.source_institution_id);
+      setTargetInstitution(loadedPlan.plan_data.target_institution_id);
+      setSelectedCourses(loadedPlan.selected_courses);
+      setIsEditMode(true);
+      setCurrentView('edit-plan');
+    }
+  };
+
+  const cancelEdit = () => {
+    // Ask for confirmation if there are unsaved changes
+    const hasChanges = 
+      planName !== loadedPlan?.plan_name ||
+      sourceInstitution !== loadedPlan?.plan_data?.source_institution_id ||
+      targetInstitution !== loadedPlan?.plan_data?.target_institution_id ||
+      selectedCourses.length !== loadedPlan?.selected_courses?.length;
+    
+    if (hasChanges) {
+      const confirmCancel = window.confirm('You have unsaved changes. Are you sure you want to cancel editing?');
+      if (!confirmCancel) return;
+    }
+    
+    setIsEditMode(false);
+    setCurrentView('view-plan');
+    // Reset form data to original plan data
+    setPlanName('');
+    setSourceInstitution('');
+    setTargetInstitution('');
+    setSelectedCourses([]);
+  };
+
   const loadPlan = async () => {
     if (!searchCode.trim()) {
       alert('Please enter a plan code');
@@ -138,17 +249,27 @@ function App() {
     setSourceInstitution('');
     setTargetInstitution('');
     setPlanCode('');
+    setIsEditMode(false);
     setCurrentView('browse');
-  };
-
-  const getInstitutionName = (id) => {
-    const inst = institutions.find(i => i.id === parseInt(id));
-    return inst ? inst.name : '';
   };
 
   // Navigation
   const renderNavigation = () => (
     <div style={{ marginBottom: '20px', borderBottom: '1px solid #ccc', paddingBottom: '10px' }}>
+      {/* Show edit mode indicator */}
+      {isEditMode && (
+        <div style={{ 
+          marginBottom: '10px', 
+          padding: '8px', 
+          backgroundColor: '#fff3cd', 
+          border: '1px solid #ffeaa7', 
+          borderRadius: '4px',
+          fontSize: '14px'
+        }}>
+          <strong>🔧 EDIT MODE:</strong> Editing plan "{loadedPlan?.plan_name}" (Code: {loadedPlan?.code})
+        </div>
+      )}
+      
       <button 
         onClick={() => setCurrentView('browse')}
         style={{ 
@@ -161,54 +282,99 @@ function App() {
           cursor: 'pointer'
         }}
       >
-        Browse Courses
+        {isEditMode ? 'Browse Courses (Add to Plan)' : 'Browse Courses'}
       </button>
+      
       <button 
-        onClick={() => setCurrentView('create-plan')}
+        onClick={() => setCurrentView(isEditMode ? 'edit-plan' : 'create-plan')}
         style={{ 
           marginRight: '10px', 
           padding: '8px 16px',
-          backgroundColor: currentView === 'create-plan' ? '#28a745' : '#f8f9fa',
-          color: currentView === 'create-plan' ? 'white' : 'black',
+          backgroundColor: (currentView === 'create-plan' || currentView === 'edit-plan') ? '#28a745' : '#f8f9fa',
+          color: (currentView === 'create-plan' || currentView === 'edit-plan') ? 'white' : 'black',
           border: '1px solid #28a745',
           borderRadius: '4px',
           cursor: 'pointer'
         }}
       >
-        Create Plan ({selectedCourses.length} courses selected)
+        {isEditMode ? `Edit Plan (${selectedCourses.length} courses selected)` : `Create Plan (${selectedCourses.length} courses selected)`}
       </button>
-      <input
-        type="text"
-        placeholder="Enter plan code"
-        value={searchCode}
-        onChange={(e) => setSearchCode(e.target.value.toUpperCase())}
-        style={{ 
-          marginRight: '10px', 
-          padding: '8px',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          width: '120px'
-        }}
-      />
-      <button 
-        onClick={loadPlan}
-        style={{ 
-          padding: '8px 16px',
-          backgroundColor: '#ffc107',
-          color: 'black',
-          border: '1px solid #ffc107',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}
-      >
-        Load Plan
-      </button>
+      
+      {!isEditMode && (
+        <>
+          <input
+            type="text"
+            placeholder="Enter plan code"
+            value={searchCode}
+            onChange={(e) => setSearchCode(e.target.value.toUpperCase())}
+            style={{ 
+              marginRight: '10px', 
+              padding: '8px',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              width: '120px'
+            }}
+          />
+          <button 
+            onClick={loadPlan}
+            style={{ 
+              padding: '8px 16px',
+              backgroundColor: '#ffc107',
+              color: 'black',
+              border: '1px solid #ffc107',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Load Plan
+          </button>
+        </>
+      )}
+      
+      {isEditMode && (
+        <button 
+          onClick={cancelEdit}
+          style={{ 
+            padding: '8px 16px',
+            backgroundColor: '#6c757d',
+            color: 'white',
+            border: '1px solid #6c757d',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            marginLeft: '10px'
+          }}
+        >
+          Cancel Edit
+        </button>
+      )}
     </div>
   );
 
   // Browse View
   const renderBrowseView = () => (
     <div>
+      {/* Show edit mode indicator in browse view */}
+      {isEditMode && (
+        <div style={{ 
+          marginBottom: '20px', 
+          padding: '15px', 
+          backgroundColor: '#e3f2fd', 
+          border: '1px solid #2196f3', 
+          borderRadius: '8px'
+        }}>
+          <h3 style={{ margin: '0 0 10px 0', color: '#1976d2' }}>
+            🔧 Adding Courses to Existing Plan
+          </h3>
+          <p style={{ margin: '0', color: '#333' }}>
+            You are editing "<strong>{loadedPlan?.plan_name}</strong>" (Code: {loadedPlan?.code}). 
+            Add courses below and they will be included in your existing plan.
+          </p>
+          <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#666' }}>
+            Currently selected: {selectedCourses.length} courses
+          </p>
+        </div>
+      )}
+      
       <div>
         {institutions.map(inst => (
           <div key={inst.id} style={{ marginBottom: '10px' }}>
@@ -300,7 +466,7 @@ function App() {
                           fontWeight: 'bold'
                         }}
                       >
-                        {isSelected ? 'Remove from Plan' : 'Add to Plan'}
+                        {isSelected ? 'Remove from Plan' : `Add to ${isEditMode ? 'Existing' : ''} Plan`}
                       </button>
                     </div>
                   </li>
@@ -439,6 +605,136 @@ function App() {
     </div>
   );
 
+  // Edit Plan View
+  const renderEditPlanView = () => (
+    <div>
+      <h2>Edit Transfer Plan</h2>
+      
+      <div style={{ marginBottom: '20px', padding: '15px', border: '1px solid #ddd', borderRadius: '8px' }}>
+        <div style={{ marginBottom: '15px', padding: '10px', backgroundColor: '#fff3cd', borderRadius: '6px', border: '1px solid #ffeaa7' }}>
+          <strong>Editing Plan:</strong> {loadedPlan?.plan_name} (Code: {loadedPlan?.code})
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Plan Name:</label>
+          <input
+            type="text"
+            value={planName}
+            onChange={(e) => setPlanName(e.target.value)}
+            placeholder="Enter a name for your transfer plan"
+            style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}
+          />
+        </div>
+
+        <div style={{ display: 'flex', gap: '20px', marginBottom: '15px' }}>
+          <div style={{ flex: 1 }}>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Source Institution:</label>
+            <select
+              value={sourceInstitution}
+              onChange={(e) => setSourceInstitution(e.target.value)}
+              style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}
+            >
+              <option value="">Select source institution</option>
+              {institutions.map(inst => (
+                <option key={inst.id} value={inst.id}>{inst.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div style={{ flex: 1 }}>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Target Institution:</label>
+            <select
+              value={targetInstitution}
+              onChange={(e) => setTargetInstitution(e.target.value)}
+              style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}
+            >
+              <option value="">Select target institution</option>
+              {institutions.map(inst => (
+                <option key={inst.id} value={inst.id}>{inst.name}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <strong>Selected Courses ({selectedCourses.length}):</strong>
+          {selectedCourses.length > 0 ? (
+            <div style={{ marginTop: '10px', maxHeight: '200px', overflowY: 'auto', border: '1px solid #eee', padding: '10px', borderRadius: '4px' }}>
+              {selectedCourses.map((course, index) => (
+                <div key={course.id} style={{ padding: '5px', borderBottom: '1px solid #f0f0f0' }}>
+                  <span>{course.code}: {course.title}</span>
+                  <button
+                    onClick={() => toggleCourseSelection(course)}
+                    style={{
+                      marginLeft: '10px',
+                      padding: '2px 6px',
+                      fontSize: '12px',
+                      backgroundColor: '#f44336',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '3px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p style={{ marginTop: '10px', fontStyle: 'italic', color: '#666' }}>
+              No courses selected. Go to "Browse Courses" to add courses to your plan.
+            </p>
+          )}
+        </div>
+
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button
+            onClick={updatePlan}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#28a745',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontWeight: 'bold'
+            }}
+          >
+            Update Plan
+          </button>
+          <button
+            onClick={cancelEdit}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#6c757d',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={deletePlan}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#dc3545',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              marginLeft: 'auto'
+            }}
+          >
+            Delete Plan
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
   // View Plan View
   const renderViewPlanView = () => (
     <div>
@@ -488,7 +784,7 @@ function App() {
             <p style={{ fontStyle: 'italic', color: '#666' }}>No courses in this plan.</p>
           )}
 
-          <div style={{ marginTop: '20px' }}>
+          <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
             <button
               onClick={() => {
                 setLoadedPlan(null);
@@ -505,6 +801,32 @@ function App() {
               }}
             >
               Back to Browse
+            </button>
+            <button
+              onClick={startEditMode}
+              style={{
+                padding: '10px 20px',
+                backgroundColor: '#28a745',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
+            >
+              Edit Plan
+            </button>
+            <button
+              onClick={deletePlan}
+              style={{
+                padding: '10px 20px',
+                backgroundColor: '#dc3545',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
+            >
+              Delete Plan
             </button>
           </div>
         </div>
@@ -554,6 +876,7 @@ function App() {
       {currentView === 'browse' && renderBrowseView()}
       {currentView === 'create-plan' && renderCreatePlanView()}
       {currentView === 'view-plan' && renderViewPlanView()}
+      {currentView === 'edit-plan' && renderEditPlanView()}
     </div>
   );
 }

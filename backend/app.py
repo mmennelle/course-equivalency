@@ -238,6 +238,88 @@ def get_plan(plan_code):
     except Exception as e:
         return jsonify({'error': f'Failed to retrieve plan: {str(e)}'}), 500
 
+@app.route('/api/update-plan/<plan_code>', methods=['PUT'])
+def update_plan(plan_code):
+    """Update an existing plan while keeping the same code"""
+    try:
+        data = request.get_json()
+        
+        conn = get_db_connection()
+        
+        # Check if plan exists
+        plan = conn.execute('SELECT * FROM TransferPlan WHERE code = ?', (plan_code.upper(),)).fetchone()
+        if not plan:
+            conn.close()
+            return jsonify({'error': 'Plan not found'}), 404
+        
+        # Update plan data - NOTE: We do NOT change the code, only the content
+        update_fields = []
+        update_values = []
+        
+        if 'plan_name' in data:
+            update_fields.append('plan_name = ?')
+            update_values.append(data['plan_name'])
+        
+        if 'source_institution_id' in data:
+            update_fields.append('source_institution_id = ?')
+            update_values.append(data['source_institution_id'])
+        
+        if 'target_institution_id' in data:
+            update_fields.append('target_institution_id = ?')
+            update_values.append(data['target_institution_id'])
+        
+        if 'selected_courses' in data:
+            update_fields.append('selected_courses = ?')
+            update_values.append(json.dumps(data['selected_courses']))
+        
+        # Always update plan_data with the complete new data
+        update_fields.append('plan_data = ?')
+        update_values.append(json.dumps(data))
+        
+        # Add plan code to values for WHERE clause (code remains the same)
+        update_values.append(plan_code.upper())
+        
+        if update_fields:
+            update_query = f"UPDATE TransferPlan SET {', '.join(update_fields)} WHERE code = ?"
+            conn.execute(update_query, update_values)
+            conn.commit()
+        
+        conn.close()
+        
+        return jsonify({
+            'success': True,
+            'plan_code': plan_code.upper(),  # Return the same code
+            'message': f'Plan "{data.get("plan_name", "")}" updated successfully! Code remains: {plan_code.upper()}'
+        })
+        
+    except Exception as e:
+        return jsonify({'error': f'Failed to update plan: {str(e)}'}), 500
+
+@app.route('/api/delete-plan/<plan_code>', methods=['DELETE'])
+def delete_plan(plan_code):
+    """Delete a plan"""
+    try:
+        conn = get_db_connection()
+        
+        # Check if plan exists
+        plan = conn.execute('SELECT * FROM TransferPlan WHERE code = ?', (plan_code.upper(),)).fetchone()
+        if not plan:
+            conn.close()
+            return jsonify({'error': 'Plan not found'}), 404
+        
+        # Delete the plan
+        conn.execute('DELETE FROM TransferPlan WHERE code = ?', (plan_code.upper(),))
+        conn.commit()
+        conn.close()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Plan deleted successfully!'
+        })
+        
+    except Exception as e:
+        return jsonify({'error': f'Failed to delete plan: {str(e)}'}), 500
+
 @app.route('/api/search-equivalents', methods=['POST'])
 def search_equivalents():
     """Search for equivalents of multiple courses at once"""
